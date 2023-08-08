@@ -1,15 +1,6 @@
 <?php
 $insert = false;
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "contactmanagementdb";
-
-$conn = mysqli_connect($servername, $username, $password, $database);
-
-if (!$conn) {
-    die("Sorry failed to connect" . mysqli_connect_error());
-}
+require '_contactmanagementdb.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
@@ -37,6 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <!-- External css -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Datatables css -->
+  <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 </head>
 
 <body>
@@ -56,24 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             href="/ContactManagementSystemProject/contactManagement.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                        <a class="nav-link" href="#">About</a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search">
@@ -85,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </nav>
     <!-- Inputs -->
     <div class="container" style="padding-left: 440px; padding-top: 49px; display: inline-flex;">
+        <!-- <h2>Enter Details</h2> -->
         <form action="/ContactManagementSystemProject/contactManagement.php" method="post"
             style="display: inline-flex;">
             <div class="cont">
@@ -100,6 +77,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </button>
         </form>
     </div>
+    <!-- Table -->
+    <div class="container" style="margin-top: 84px;">
+    <table class="table" id="myTable">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+        $sql = "SELECT * FROM `contactmanager`";
+        $result = mysqli_query($conn, $sql);
+        $totalRowColumn = mysqli_num_rows($result);
+        $id = 0;
+        if ($totalRowColumn > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $id+=1;
+                echo "<tr>
+                <th scope='row'>" . $id . "</th>
+                <td>" . $row['name'] . "</td>
+                <td>" . $row['phonenumber'] . "</td>
+                <td>Action</td>
+              </tr>" ;
+            }
+        }
+    ?>
+  </tbody>
+</table>
+    </div>
 
 
 
@@ -107,6 +116,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
+    
+    <!-- Jquery -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+  <!-- Datatables -->
+  <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script>
+    let table = new DataTable('#myTable');
+  </script>
 </body>
 
 </html>
